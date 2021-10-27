@@ -2,6 +2,12 @@
     <div>
         <v-progress-circular v-if="!patient" color="primary" indeterminate/>
         <v-container v-else>
+            <v-row class="align-center mb-5">
+                <v-col class="d-flex align-center" cols="12">
+                    <h2 class="pr-5 main-header-title">User Details</h2>
+                    <v-divider></v-divider>
+                </v-col>
+            </v-row>
             <patient-info :patient="patient"/>
             <div class="ma-10"></div>
             <patient-notes :detail-note="patient.detailNote" :loading="loading" :summarized-note="summarizedNote"/>
@@ -76,5 +82,7 @@ function getInitialText() {
 </script>
 
 <style lang="scss" scoped>
-
+.main-header-title {
+    color: rgb(0 0 0 / 38%);
+}
 </style>
