@@ -5,6 +5,9 @@ import find from 'lodash/find.js';
 async function findAll() {
     const responseData = await axios.get(BASE_PATIENTS_URL_FHIR + '?_count=1000&_revinclude=DocumentReference:patient');
     const {data: {total, entry}} = responseData;
+    if (!entry) {
+        return undefined;
+    }
     const patients = mapPatients(entry);
     return [patients, total];
 }
@@ -12,6 +15,9 @@ async function findAll() {
 async function findById(id) {
     const responseData = await axios.get(BASE_PATIENTS_URL_FHIR + `?_id=${id}&_revinclude=DocumentReference:patient`);
     const {data: {entry}} = responseData;
+    if (!entry) {
+        return undefined;
+    }
     let patients = mapPatients(entry);
     return patients[0];
 
