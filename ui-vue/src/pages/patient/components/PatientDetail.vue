@@ -23,6 +23,7 @@
                             v-model="textToSummarize"
                             class="pt-5 pb-2 pr-2 pl-2"
                             clearable
+                            auto-grow
                             hint="Enter text you want to summarize"
                             label="Text To Summarize"
                             name="text-to-summarize"/>
