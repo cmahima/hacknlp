@@ -1,5 +1,11 @@
 <template>
     <v-container>
+        <v-row class="align-center mb-5">
+            <v-col class="d-flex align-center" cols="12">
+                <h2 class="pr-5 main-header-title">Patients</h2>
+                <v-divider></v-divider>
+            </v-col>
+        </v-row>
         <v-card>
             <v-card-title>
                 Search Patient
@@ -80,5 +86,7 @@ export default {
 </script>
 
 <style scoped>
-
+.main-header-title {
+    color: rgb(0 0 0 / 38%);
+}
 </style>
