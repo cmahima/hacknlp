@@ -1,47 +1,16 @@
 <template>
     <div>
-        <v-progress-circular v-if="loading"
-                             color="primary"
-                             indeterminate/>
-
+        <v-progress-circular v-if="!patient" color="primary" indeterminate/>
         <v-container v-else>
-            <v-card class="mx-auto">
-                <v-row>
-                    <v-col cols="3" md="3">
-                        <v-row class="d-flex justify-center mt-1 mb-1">
-                            <v-avatar size="128">
-                                <img :alt="patient.name" :src="patient.avatar">
-                            </v-avatar>
-                        </v-row>
-                        <v-row class="d-flex justify-center mb-1">
-                            <h3>{{ patient.name }}</h3>
-                        </v-row>
-                    </v-col>
-                    <v-col class="d-flex align-center" cols="9" md="9">
-                        <v-container>
-                            <v-row>
-                                <v-col class="d-flex pt-0 pb-0" cols="12" md="12" sm="12">User Info</v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col class="d-flex pt-0" cols="4" md="4" sm="12">Gender: &nbsp;<b>Female</b></v-col>
-                                <v-col class="d-flex pt-0" cols="4" md="4" sm="12">DOB: &nbsp;<b>XX/XX/XXXX</b></v-col>
-                                <v-col class="d-flex pt-0" cols="4" md="4" sm="12">Phone: &nbsp;<b>123-456-7890</b></v-col>
-                            </v-row>
-                            <v-row>
-                                <v-divider class="mt-2 mb-2"/>
-                            </v-row>
-                            <v-row>
-                                <v-col class="d-flex pt-0 pb-0" cols="12" md="12" sm="12">Health Info</v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col class="d-flex pt-0" cols="4" md="4" sm="12">Blood Type: &nbsp;<b>A</b></v-col>
-                                <v-col class="d-flex pt-0" cols="4" md="4" sm="12">Allergies: &nbsp;<b>None</b></v-col>
-                                <v-col class="d-flex pt-0" cols="4" md="4" sm="12">Covid-19: &nbsp;<b>No</b></v-col>
-                            </v-row>
-                        </v-container>
-                    </v-col>
-                </v-row>
-            </v-card>
+            <patient-info :patient="patient"/>
+            <div class="ma-10"></div>
+            <v-row>
+                <v-col cols="9">
+                    <v-switch v-model="sideBySideMode" inset label="Side By Side View"></v-switch>
+                </v-col>
+            </v-row>
+            <patient-notes v-if="!sideBySideMode" :detail-note="patient.detailNote" :loading="loading" :summarized-note="summarizedNote"/>
+            <patient-notes-side-by-side v-else :patient="patient"/>
         </v-container>
     </div>
 </template>
@@ -49,44 +18,38 @@
 <script>
 import axios from 'axios';
 import {BASE_PATIENTS_URL} from '@/pages/patient/constants/PatientConstants.js';
+import PatientInfo from '@/pages/patient/components/PatientInfo.vue';
+import PatientNotes from '@/pages/patient/components/PatientNotes.vue';
+import PatientNotesSideBySide from '@/pages/patient/components/PatientNotesSideBySide.vue';
 
 export default {
     name: "PatientDetail",
+    components: {PatientNotesSideBySide, PatientNotes, PatientInfo},
     props: {
         id: {type: Number, required: true}
     },
     data: () => ({
         loading: false,
-        patient: undefined
+        patient: undefined,
+        summarizedNote: 'Lorem Ipsum',
+        sideBySideMode: false
     }),
     async beforeMount() {
-        this.loading = true;
         const {data} = await axios.get(`${BASE_PATIENTS_URL}/${this.id}`)
-        this.loading = false;
         this.patient = data;
+        this.summarizeNote();
+    },
+    methods: {
+        async summarizeNote() {
+            this.loading = true;
+            setTimeout(() => {
+                this.loading = false;
+            }, 2000);
+        }
     }
 }
 </script>
 
 <style lang="scss" scoped>
-.user-info-container {
-    display: flex;
-    flex-direction: column;
-    margin: 10px 5px;
 
-    .info-group {
-        display: flex;
-        flex: 1;
-
-        &.user-info {
-            border-bottom: 1px solid red;
-        }
-
-        .info-item {
-            align-items: center;
-            display: inline-flex;
-            flex: 1;
-        }
-    }
-}
 </style>

@@ -7,9 +7,9 @@
 
             <v-spacer></v-spacer>
 
-            <v-btn href="" target="_blank" text>
-                <span class="mr-2">Link</span>
-                <v-icon>mdi-open-in-new</v-icon>
+            <v-btn href="https://git.pointclickcare.com/users/tulada/repos/hacknlp/browse" target="_blank" text>
+                <span class="mr-2">Bit Bucket</span>
+                <v-icon>mdi-code-braces</v-icon>
             </v-btn>
         </v-app-bar>
 
@@ -19,9 +19,7 @@
                 |
                 <router-link :to="{name: 'Iris'}">Iris Example</router-link>
                 |
-              <router-link :to="{name: 'Summary'}">Summary Example</router-link>
-                |
-                <router-link :to="{name: 'HomePage'}">Home</router-link>
+                <router-link :to="{name: 'Summary'}">Summary Example</router-link>
             </div>
             <router-view/>
         </v-main>
