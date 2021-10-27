@@ -26,7 +26,7 @@ def summarize():
     document = nlp_pl(text)  # doc object
 
     tokens = [token.text for token in document]  # tokenized text
-    reduction_rate = 0.1
+    reduction_rate = 0.25
     word_frequencies = {}
     for word in document:
         if word.text.lower() not in stopwords:
