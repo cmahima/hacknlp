@@ -18,7 +18,7 @@ const routes = [
             {
                 path: ':id',
                 name: 'PatientDetail',
-                props: ({params}) => ({...params, ...{id: parseInt(params.id, 10)}}),
+                props: true,
                 component: () => import(/* webpackChunkName: "patient-detail" */ '../pages/patient/components/PatientDetail.vue')
             },
             {path: '*', redirect: '/patient'}

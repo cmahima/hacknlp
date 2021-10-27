@@ -8,7 +8,7 @@
         </v-row>
         <v-card>
             <v-card-title>
-                Search Patient
+                <v-switch v-model="displayPatientWithNotes" inset label="Patient With Notes Only"></v-switch>
                 <v-spacer></v-spacer>
                 <v-text-field
                     v-model="search"
@@ -20,7 +20,7 @@
             </v-card-title>
             <v-data-table
                 :headers="headers"
-                :items="patientList"
+                :items="computedPatients"
                 :items-per-page="10"
                 :loading="loading"
                 :search="search"
@@ -30,11 +30,11 @@
                     <v-row align="center" class="spacer pa-1" no-gutters>
                         <v-col cols="4">
                             <v-avatar>
-                                <img :src="item.avatar" alt="item.name">
+                                <img alt="item.name" src="../../../assets/placeholder.png">
                             </v-avatar>
                         </v-col>
                         <v-col cols="8">
-                            <strong v-html="item.name"></strong>
+                            <strong>{{ item.name }}</strong>
                         </v-col>
                     </v-row>
                 </template>
@@ -43,8 +43,8 @@
                         {{ item.phone }}
                     </v-chip>
                 </template>
-                <template v-slot:item.dateOfBirth="{ item }">
-                        {{ item.dateOfBirth | formatDate("MM/DD/yyyy") }}
+                <template v-slot:item.birthDate="{ item }">
+                    {{ item.birthDate | formatDate("MM/DD/yyyy") }}
                 </template>
             </v-data-table>
         </v-card>
@@ -52,35 +52,46 @@
 </template>
 
 <script>
-import axios from 'axios';
-import {BASE_PATIENTS_URL} from '@/pages/patient/constants/PatientConstants.js';
+import * as PatientApiService from '../services/PatientApiService.js'
 
 export default {
     name: "PatientTable",
     data: () => ({
         loading: false,
         search: '',
+        displayPatientWithNotes: false,
         headers: [
-            {text: 'ID', align: 'start', sortable: true, value: 'id'},
             {text: 'Name', value: 'name', width: '200px'},
-            {text: 'Phone', value: 'phone'},
+            {text: 'Gender', value: 'gender'},
             {text: 'Street Address', value: 'streetAddress'},
             {text: 'City', value: 'city'},
-            {text: 'DoB', value: 'dateOfBirth'}
+            {text: 'State', value: 'state'},
+            {text: 'Postal Code', value: 'postalCode'},
+            {text: 'DoB', value: 'birthDate'}
         ],
-        patientList: []
+        patientList: [],
+        totalPatientCount: null
     }),
-
+    computed: {
+        computedPatients() {
+            if (this.displayPatientWithNotes) {
+                return this.patientList.filter(pat => !!pat.detailNote);
+            }
+            return this.patientList;
+        }
+    },
     methods: {
         handleRowClick(patient) {
             this.$router.push({name: 'PatientDetail', params: {id: patient.id}})
         }
+
     },
     async beforeMount() {
         this.loading = true;
-        const {data} = await axios.get(BASE_PATIENTS_URL);
+        const [patients, totalPatientCount] = await PatientApiService.findAll();
         this.loading = false;
-        this.patientList = data;
+        this.totalPatientCount = totalPatientCount;
+        this.patientList = patients;
     }
 }
 </script>

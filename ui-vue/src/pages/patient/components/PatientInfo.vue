@@ -4,7 +4,7 @@
             <v-col class="user-avatar-wrapper mt-1 mb-1" cols="3" md="3">
                 <v-row class="d-flex justify-center mt-1 mb-1">
                     <v-avatar size="128">
-                        <img :alt="patient.name" :src="patient.avatar">
+                        <img :alt="patient.name" src="../../../assets/placeholder.png">
                     </v-avatar>
                 </v-row>
                 <v-row class="d-flex justify-center mb-1">
@@ -20,7 +20,7 @@
                     <v-row>
                         <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Gender: &nbsp;<b>{{ patient.gender }}</b></v-col>
                         <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">
-                            DOB: &nbsp;<b>{{ patient.dateOfBirth | formatDate('MM/DD/yyyy') }}</b></v-col>
+                            DOB: &nbsp;<b>{{ patient.birthDate | formatDate('MM/DD/yyyy') }}</b></v-col>
                         <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Phone: &nbsp;<b>{{ patient.phone }}</b></v-col>
                     </v-row>
                     <v-row>

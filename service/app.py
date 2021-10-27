@@ -9,6 +9,9 @@ from string import punctuation
 from heapq import nlargest
 import requests
 
+from spacy import displacy
+from flaskext.markdown import Markdown
+
 punctuation += '\n'
 stopwords = list(STOP_WORDS)
 spacy.cli.download("en_core_web_sm")
@@ -17,6 +20,7 @@ spacy.cli.download("en_core_web_sm")
 secret = secrets.token_urlsafe(32)
 app = Flask(__name__)
 CORS(app)
+Markdown(app)
 app.secret_key = secret
 
 
@@ -78,7 +82,7 @@ def summarize():
     document = nlp_pl(text)  # doc object
 
     tokens = [token.text for token in document]  # tokenized text
-    reduction_rate = 0.25
+    reduction_rate = 0.2
     word_frequencies = {}
     for word in document:
         if word.text.lower() not in stopwords:
@@ -130,6 +134,28 @@ def summarize():
     print("- NON_REL: " + get_summary(sentence_scores, reduction_rate))
     print("- REL: " + get_summary(sentence_scores_rel, reduction_rate))
     return jsonify({'result': get_summary(sentence_scores, reduction_rate)})
+
+
+@app.route('/ner/', methods=['POST'])
+def extract_entities():
+    text = request.get_json()['text']
+    nlp_pl = spacy.load('en_ner_bc5cdr_md')  # process original text according with the Spacy nlp pipeline for english
+    #nlp_pl = spacy.load('en_core_sci_md')
+    #nlp_pl.add_pipe('negex')
+    document = nlp_pl(text)
+
+    def get_entity_options():
+        entities = ["DISEASE", "CHEMICAL", "NEG_ENTITY"]
+        colors = {'DISEASE': 'linear-gradient(180deg, #66ffcc, #abf763)',
+                  'CHEMICAL': 'linear-gradient(90deg, #aa9cfc, #fc9ce7)',
+                  "NEG_ENTITY": 'linear-gradient(90deg, #ffff66, #ff6600)'}
+        options = {"ents": entities, "colors": colors}
+        return options
+
+    options = get_entity_options()
+    result = displacy.render(document, style = 'ent', options=options)
+
+    return jsonify({'result':result})
 
 @app.after_request
 def after_request(response):
