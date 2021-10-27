@@ -39,11 +39,10 @@ import axios from 'axios';
 import {BASE_PATIENTS_URL} from '@/pages/patient/constants/PatientConstants.js';
 import PatientInfo from '@/pages/patient/components/PatientInfo.vue';
 import PatientNotes from '@/pages/patient/components/PatientNotes.vue';
-import PatientNotesSideBySide from '@/pages/patient/components/PatientNotesSideBySide.vue';
 
 export default {
     name: "PatientDetail",
-    components: {PatientNotesSideBySide, PatientNotes, PatientInfo},
+    components: {PatientNotes, PatientInfo},
     props: {
         id: {type: Number, required: true}
     },
