@@ -11,7 +11,7 @@
             <patient-info :patient="patient"/>
             <div class="ma-10"></div>
             <patient-detail-tabs v-if="patient.detailNote" :patient="patient"/>
-            <h3>Sorry patient doesn't have any note</h3>
+            <h3 v-else>Sorry patient doesn't have any note</h3>
         </v-container>
     </div>
 </template>
