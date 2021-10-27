@@ -15,18 +15,20 @@
             <v-col class="d-flex align-center" cols="9" md="9">
                 <v-container>
                     <v-row>
-                        <v-col class="d-flex pt-0 pb-0" cols="12" md="12" sm="12" xs="12">User Info</v-col>
+                        <v-col class="d-flex pt-0 patient-info-container-header" cols="12" md="12" sm="12" xs="12">User Info</v-col>
                     </v-row>
                     <v-row>
-                        <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Gender: &nbsp;<b>Female</b></v-col>
-                        <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">DOB: &nbsp;<b>XX/XX/XXXX</b></v-col>
-                        <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Phone: &nbsp;<b>123-456-7890</b></v-col>
+                        <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Gender: &nbsp;<b>{{ patient.gender }}</b></v-col>
+                        <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">DOB: &nbsp;<b>{{
+                                patient.dateOfBirth | formatDate('MM/DD/yyyy')
+                            }}</b></v-col>
+                        <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Phone: &nbsp;<b>{{ patient.phone }}</b></v-col>
                     </v-row>
                     <v-row>
                         <v-divider class="mt-2 mb-2"/>
                     </v-row>
                     <v-row>
-                        <v-col class="d-flex pt-0 pb-0" cols="12" md="12" sm="12" xs="12">Health Info</v-col>
+                        <v-col class="d-flex pt-0 patient-info-container-header" cols="12" md="12" sm="12" xs="12">Health Info</v-col>
                     </v-row>
                     <v-row>
                         <v-col class="d-flex pt-0" cols="4" md="4" sm="12" xs="12">Blood Type: &nbsp;<b>A</b></v-col>
@@ -48,6 +50,9 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="scss" scoped>
+.patient-info-container-header {
+    color: grey;
+    font-size: .8em;
+}
 </style>

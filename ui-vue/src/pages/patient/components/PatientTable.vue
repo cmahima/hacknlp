@@ -37,6 +37,9 @@
                         {{ item.phone }}
                     </v-chip>
                 </template>
+                <template v-slot:item.dateOfBirth="{ item }">
+                        {{ item.dateOfBirth | formatDate("MM/DD/yyyy") }}
+                </template>
             </v-data-table>
         </v-card>
     </v-container>
@@ -56,7 +59,8 @@ export default {
             {text: 'Name', value: 'name', width: '200px'},
             {text: 'Phone', value: 'phone'},
             {text: 'Street Address', value: 'streetAddress'},
-            {text: 'City', value: 'city'}
+            {text: 'City', value: 'city'},
+            {text: 'DoB', value: 'dateOfBirth'}
         ],
         patientList: []
     }),
@@ -67,7 +71,9 @@ export default {
         }
     },
     async beforeMount() {
+        this.loading = true;
         const {data} = await axios.get(BASE_PATIENTS_URL);
+        this.loading = false;
         this.patientList = data;
     }
 }
