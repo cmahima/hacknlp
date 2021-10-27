@@ -10,32 +10,53 @@
             </v-row>
             <patient-info :patient="patient"/>
             <div class="ma-10"></div>
-            <patient-notes :detail-note="patient.detailNote" :loading="loading" :summarized-note="summarizedNote"/>
-          <div class="ma-10"></div>
 
-            <v-row>
-                <v-col class="d-flex align-start">
-                    <v-btn color="grey" elevation="2" large @click="summarizeNote">
-                        <v-icon>mdi-book-open</v-icon>
-                        &nbsp;Summarize
-                    </v-btn>
-                </v-col>
-            </v-row>
-            <v-row>
-                <v-col>
+            <v-tabs color="secondary">
+                <v-tab>
+                    <v-icon left>mdi-form-select</v-icon>
+                    Summary
+                </v-tab>
+                <v-tab>
+                    <v-icon left>mdi-marker</v-icon>
+                    Highlight
+                </v-tab>
+                <v-tab-item>
                     <v-card>
-                        <v-textarea
-                            color="secondary"
-                            v-model="this.patient.detailNote"
-                            class="pt-5 pb-2 pr-2 pl-2"
-                            clearable
-                            auto-grow
-                            hint="Enter text you want to summarize"
-                            label="Text To Summarize"
-                            name="text-to-summarize"/>
+                        <patient-notes :detail-note="patient.detailNote" :loading="summarizedNote.loading" :summarized-note="summarizedNote.value"/>
+                        <div class="ma-10"></div>
+                        <v-row>
+                            <v-col class="d-flex align-start">
+                                <v-btn color="grey" elevation="2" large @click="summarizeNote">
+                                    <v-icon>mdi-book-open</v-icon>
+                                    &nbsp;Summarize
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col>
+                                <v-card>
+                                    <v-textarea
+                                        v-model="this.patient.detailNote"
+                                        auto-grow
+                                        class="pt-5 pb-2 pr-2 pl-2"
+                                        clearable
+                                        color="secondary"
+                                        hint="Enter text you want to summarize"
+                                        label="Text To Summarize"
+                                        name="text-to-summarize"/>
+                                </v-card>
+                            </v-col>
+                        </v-row>
                     </v-card>
-                </v-col>
-            </v-row>
+                </v-tab-item>
+                <v-tab-item>
+                    <v-container>
+                        <v-card>
+                            <patient-note-highlighted :highlighted-note="highlightedNote.value" :loading="highlightedNote.loading"/>
+                        </v-card>
+                    </v-container>
+                </v-tab-item>
+            </v-tabs>
         </v-container>
     </div>
 </template>
@@ -45,28 +66,42 @@ import axios from 'axios';
 import PatientInfo from '@/pages/patient/components/PatientInfo.vue';
 import PatientNotes from '@/pages/patient/components/PatientNotes.vue';
 import * as PatientApiService from '../services/PatientApiService.js'
+import PatientNoteHighlighted from '@/pages/patient/components/PatientNoteHighlighted.vue';
 
 export default {
     name: "PatientDetail",
-    components: {PatientNotes, PatientInfo},
+    components: {PatientNoteHighlighted, PatientNotes, PatientInfo},
     props: {
         id: {type: [Number, String], required: true}
     },
     data: () => ({
-        loading: false,
         patient: undefined,
-        summarizedNote: 'Lorem Ipsum',
+        summarizedNote: {
+            loading: false,
+            value: ''
+        },
+        highlightedNote: {
+            loading: false,
+            value: ''
+        }
     }),
     async beforeMount() {
         this.patient = await PatientApiService.findById(this.id)
         this.summarizeNote();
+        this.getHighlightedNote();
     },
     methods: {
         async summarizeNote() {
-            this.loading = true;
+            this.summarizedNote.loading = true;
+            const data = await axios.post('http://127.0.0.1:8000/summarize/', {text: this.patient.detailNote})
+            this.summarizedNote.loading = false;
+            this.summarizedNote.value = data.data.result;
+        },
+        async getHighlightedNote() {
+            this.highlightedNote.loading = true;
             const data = await axios.post('http://127.0.0.1:8000/ner/', {text: this.patient.detailNote})
-            this.loading = false;
-            this.summarizedNote = data.data.result;
+            this.highlightedNote.loading = false;
+            this.highlightedNote.value = data.data.result;
         }
     }
 }
