@@ -4,7 +4,7 @@
         <v-container v-else>
             <v-row class="align-center mb-5">
                 <v-col class="d-flex align-center" cols="12">
-                    <h2 class="pr-5 main-header-title">User Details</h2>
+                    <h2 class="pr-5 main-header-title">Patient Details</h2>
                     <v-divider></v-divider>
                 </v-col>
             </v-row>
