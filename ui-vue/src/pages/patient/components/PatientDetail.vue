@@ -11,7 +11,7 @@
             <patient-info :patient="patient"/>
             <div class="ma-10"></div>
             <patient-notes :detail-note="patient.detailNote" :loading="loading" :summarized-note="summarizedNote"/>
-            <div class="ma-10"></div>
+          <div class="ma-10"></div>
 
             <v-row>
                 <v-col class="d-flex align-start">
@@ -64,7 +64,7 @@ export default {
     methods: {
         async summarizeNote() {
             this.loading = true;
-            const data = await axios.post('http://127.0.0.1:8000/summarize/', {text: this.patient.detailNote})
+            const data = await axios.post('http://127.0.0.1:8000/ner/', {text: this.patient.detailNote})
             this.loading = false;
             this.summarizedNote = data.data.result;
         }

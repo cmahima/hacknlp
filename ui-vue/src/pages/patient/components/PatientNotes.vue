@@ -9,7 +9,8 @@
                     <v-progress-circular :size="70" :width="7" color="purple" indeterminate></v-progress-circular>
                     <h4 class="mt-5">Preparing summary for the note.. Please Wait.</h4>
                 </div>
-                <p v-else class="user-note">{{ summarizedNote }}</p>
+               <!-- <p v-else class="user-note">{{ summarizedNote }}</p>-->
+                <div v-html="summarizedNote"></div>
             </v-expansion-panel-content>
         </v-expansion-panel>
         <v-expansion-panel>
