@@ -19,6 +19,8 @@
                 |
                 <router-link :to="{name: 'Iris'}">Iris Example</router-link>
                 |
+              <router-link :to="{name: 'Summary'}">Summary Example</router-link>
+                |
                 <router-link :to="{name: 'HomePage'}">Home</router-link>
             </div>
             <router-view/>

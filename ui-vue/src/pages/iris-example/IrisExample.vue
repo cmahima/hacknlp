@@ -55,10 +55,10 @@ export default {
         isLoading: false,
         result: '',
         formData: {
-            sepalLength: 4,
-            sepalWidth: 2,
-            petalLength: 1,
-            petalWidth: 0.1
+            // sepalLength: 4,
+            // sepalWidth: 2,
+            // petalLength: 1,
+            // petalWidth: 0.1
         },
         availableSepalLengths: [],
         availableSepalWidths: [],

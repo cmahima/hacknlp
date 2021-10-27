@@ -33,6 +33,14 @@ const routes = [
         component: () => import(/* webpackChunkName: "iris-example" */ '../pages/iris-example/IrisExample.vue')
     },
     {
+        path: '/summary',
+        name: 'Summary',
+        // route level code-splitting
+        // this generates a separate chunk (iris-example.[hash].js) for this route
+        // which is lazy-loaded when the route is visited.
+        component: () => import(/* webpackChunkName: "iris-example" */ '../pages/summary/summaryExample.vue')
+    },
+    {
         path: '/home',
         name: 'HomePage',
         // route level code-splitting
