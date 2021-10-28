@@ -11,6 +11,8 @@ import requests
 
 from spacy import displacy
 from flaskext.markdown import Markdown
+from transformers import pipeline
+
 
 punctuation += '\n'
 stopwords = list(STOP_WORDS)
@@ -22,57 +24,43 @@ app = Flask(__name__)
 CORS(app)
 Markdown(app)
 app.secret_key = secret
+classifier = pipeline('zero-shot-classification',
+                      model='facebook/bart-large-mnli')
 
 
 @app.route('/classify/',methods=['POST'])
 def classify():
 
-
-    # {'patients': [{
-    #     'patient_id':123,
-    #     'text':'test'
-    # }]
-    # 'type_of_classification': 'smoke'
-    # }
     print("data is " + format(request.get_json()))
     data = request.get_json()
     patients = data['patients']
-    type_of_classification = data['type_of_classification']
 
-    smoke_parameters = {"candidate_labels": "SMOKER, NON SMOKER", "multi_label": False}
-    alcohol_parameters = {"candidate_labels": "Alcoholic, NON Alcoholic", "multi_label": False}
+
+    parameters = ["drug abuse","family support", "smoke", "alcohol"]
+
     results = []
 
     for patient in patients:
-        if type_of_classification == 'smoke':
-            parameters = smoke_parameters
-            label = 'SMOKER'
-        else:
-            parameters = alcohol_parameters
-            label = 'Alcoholic'
-        params = {
-            "inputs" : patient['text'],
-            "parameters": parameters,
-        }
-        response = requests.post('https://api-inference.huggingface.co/models/facebook/bart-large-mnli',
-                                 json=params)
 
-        scores = response.json()
-        label_dict ={}
-        for x,y in zip(scores['labels'],scores['scores']):
-            print(x,y)
+        response = classifier(patient['text'], parameters)
+
+        label_dict = {}
+        for x, y in zip(response['labels'], response['scores']):
+            print(x, y)
             label_dict[x] = y
 
         out_data = {
-            'patient_id':patient['patient_id'],
-            'score':label_dict[label],
+            'patient_id': patient['patient_id'],
+            'score': label_dict,
 
         }
         results.append(out_data)
 
-    output_data = {"data":results}
+    output_data = {"data": results}
 
     return jsonify(output_data)
+
+
 
 @app.route('/summarize/', methods=['POST'])
 def summarize():
