@@ -16,15 +16,33 @@
         <div class="ma-5"></div>
         <v-card>
             <v-card-title>
-                <v-switch v-model="displayPatientWithNotes" inset label="Patient With Notes Only"></v-switch>
+                <v-container>
+                    <v-row>
+                        <v-col cols="12">
+                            <v-switch v-model="displayPatientWithNotes" inset label="Patient With Notes Only"></v-switch>
+                        </v-col>
+                        <v-col cols="12">
+                            <v-text-field v-model="search" append-icon="mdi-magnify" hide-details label="Search" single-line></v-text-field>
+                        </v-col>
+                        <v-col>
+                            <v-select v-if="!loadingClassifyNotes" v-model="classifyNoteSearch" :items="classifyOptions"
+                                      clearable
+                                      :menu-props="{ maxWidth: '400' }"
+                                      chips
+                                      class="social-deter-checkbox"
+                                      label="Social Determinants"
+                                      multiple>
+                                <template v-slot:selection="{ item, index }">
+                                    <v-chip v-if="index < 4"><span>{{ item }}</span></v-chip>
+                                    <span v-if="index === 4" class="grey--text text-caption">(+{{ classifyNoteSearch.length - 4 }} others)</span>
+                                </template>
+                            </v-select>
+                        </v-col>
+                    </v-row>
+                </v-container>
                 <v-spacer></v-spacer>
-                <v-text-field
-                    v-model="search"
-                    append-icon="mdi-magnify"
-                    hide-details
-                    label="Search"
-                    single-line
-                ></v-text-field>
+
+
             </v-card-title>
             <v-data-table
                 :headers="headers"
@@ -55,15 +73,15 @@
                     {{ item.birthDate | formatDate("MM/DD/yyyy") }}
                 </template>
                 <template v-slot:item.classifyNote="{ item }">
-                    <div v-if="loadingClassifiyNotes" class="ma-5">
+                    <div v-if="loadingClassifyNotes" class="ma-5">
                         <v-progress-circular :size="20" :width="3" color="purple" indeterminate></v-progress-circular>
                     </div>
                     <div v-else>
-                    <span v-if="item.classifyNote">
+                    <span v-if="item.classifyNote" class="d-flex">
                         <v-chip v-for="key in item.classifyNote.split(', ')"
                                 :key="`${item.id}-${key}`"
                                 :color="key === 'family support' ? 'green' : 'red'"
-                                class="text-capitalize"
+                                class="text-capitalize mr-1"
                                 label
                                 outlined>
                             {{ key }}
@@ -104,7 +122,12 @@ export default {
         ],
         patientList: [],
         totalPatientCount: null,
-        loadingClassifiyNotes: false,
+        classifyNoteSearch: [],
+        classifyOptions: [
+            'alcohol', 'abusive', 'family support', 'drug abuse', 'smoke', 'no alcohol', 'no abusive', 'no family support', 'no drug abuse',
+            'no smoke'
+        ],
+        loadingClassifyNotes: false,
         classifyNote: {
             loading: false,
             value: ''
@@ -112,10 +135,19 @@ export default {
     }),
     computed: {
         computedPatients() {
+            const {classifyNoteSearch} = this;
+            let filterWithSocialDeterminants = pat => {
+                if (classifyNoteSearch.length === 0 || this.loadingClassifyNotes) {
+                    return true;
+                }
+                const common = pat.classifyNoteArr.filter(vv => classifyNoteSearch.includes(vv.toLowerCase()))
+                return common.length === classifyNoteSearch.length;
+            };
+
             if (this.displayPatientWithNotes) {
-                return this.patientList.filter(pat => !!pat.detailNote);
+                return this.patientList.filter(pat => !!pat.detailNote).filter(filterWithSocialDeterminants)
             }
-            return this.patientList;
+            return this.patientList.filter(filterWithSocialDeterminants);
         }
     },
     methods: {
@@ -143,7 +175,7 @@ export default {
                 return !(cachedValue && cachedValue.classifyNote);
             });
             if (mappedPatient.length > 0) {
-                this.loadingClassifiyNotes = true;
+                this.loadingClassifyNotes = true;
                 const data = await axios.post('http://127.0.0.1:8000/classify/', {
                     patients: mappedPatient
                 });
@@ -155,18 +187,23 @@ export default {
                         }
                     })
                 })
-                this.loadingClassifiyNotes = false;
+                this.loadingClassifyNotes = false;
             }
             this.patientList = this.patientList.map(patient => {
                 const value = get(patient.id);
                 if (value && value.classifyNote) {
                     const commaSeperatedValue = [];
+                    const classifyNoteArr = [];
                     Object.keys(value.classifyNote).forEach(key => {
                         const threshold = key === 'family support' ? 30 : 70;
                         if (parseInt(value.classifyNote[key] * 100, 10) > threshold) {
                             commaSeperatedValue.push(key);
+                            classifyNoteArr.push(key)
+                        } else {
+                            classifyNoteArr.push(`no ${key}`)
                         }
                     })
+                    patient.classifyNoteArr = classifyNoteArr;
                     patient.classifyNote = commaSeperatedValue.join(", ")
                 }
                 return patient;
@@ -182,5 +219,10 @@ export default {
 <style scoped>
 .main-header-title {
     color: rgb(0 0 0 / 38%);
+}
+
+::v-deep .v-chip__content,
+::v-deep .v-list-item__title {
+    text-transform: capitalize;
 }
 </style>
