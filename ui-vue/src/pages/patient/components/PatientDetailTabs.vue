@@ -12,7 +12,7 @@
         </v-tab>
         <v-tab>
             <v-icon left>mdi-arrange-bring-forward</v-icon>
-            Classification
+            Social Determinants
             &nbsp;&nbsp;<v-progress-circular v-if="classifyNote.loading" :size="30" :width="5" color="purple" indeterminate></v-progress-circular>
         </v-tab>
         <v-tab-item>
