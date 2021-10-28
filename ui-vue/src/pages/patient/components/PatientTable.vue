@@ -55,6 +55,10 @@
                     {{ item.birthDate | formatDate("MM/DD/yyyy") }}
                 </template>
                 <template v-slot:item.classifyNote="{ item }">
+                    <div v-if="loadingClassifiyNotes" class="ma-5">
+                        <v-progress-circular :size="20" :width="3" color="purple" indeterminate></v-progress-circular>
+                    </div>
+                    <div v-else>
                     <span v-if="item.classifyNote">
                         <v-chip v-for="key in item.classifyNote.split(', ')"
                                 :key="`${item.id}-${key}`"
@@ -65,6 +69,7 @@
                             {{ key }}
                         </v-chip>
                     </span>
+                    </div>
                 </template>
             </v-data-table>
         </v-card>
@@ -99,6 +104,7 @@ export default {
         ],
         patientList: [],
         totalPatientCount: null,
+        loadingClassifiyNotes: false,
         classifyNote: {
             loading: false,
             value: ''
@@ -137,6 +143,7 @@ export default {
                 return !(cachedValue && cachedValue.classifyNote);
             });
             if (mappedPatient.length > 0) {
+                this.loadingClassifiyNotes = true;
                 const data = await axios.post('http://127.0.0.1:8000/classify/', {
                     patients: mappedPatient
                 });
@@ -148,6 +155,7 @@ export default {
                         }
                     })
                 })
+                this.loadingClassifiyNotes = false;
             }
             this.patientList = this.patientList.map(patient => {
                 const value = get(patient.id);
