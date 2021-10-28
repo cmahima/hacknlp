@@ -8,11 +8,14 @@ from spacy.lang.en.stop_words import STOP_WORDS
 from string import punctuation
 from heapq import nlargest
 import requests
-
+from openai import Completion
+import openai
 from spacy import displacy
 from flaskext.markdown import Markdown
 from transformers import pipeline
 
+OPENAI_API_KEY = "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"
+openai.api_key = OPENAI_API_KEY
 
 punctuation += '\n'
 stopwords = list(STOP_WORDS)
@@ -126,6 +129,26 @@ def summarize():
         summary = "Note very small for summary"
 
     return jsonify({'result': summary})
+
+@app.route('/summarize_openai/', methods=['POST'])
+def openai():
+    text = request.get_json()['text']
+
+
+    input = "\"\"\"\n" + text + "\n\"\"\"\n"
+    response = Completion.create(
+        engine="babbage",
+        prompt=input,
+        temperature=0.3,
+        max_tokens=100,
+        top_p=1,
+        frequency_penalty=0.2,
+        presence_penalty=0,
+        stop=["\"\"\""]
+    )
+
+    return jsonify({'result':response['choices'][0]['text']})
+
 
 
 @app.route('/ner/', methods=['POST'])
