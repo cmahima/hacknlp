@@ -54,6 +54,18 @@
                 <template v-slot:item.birthDate="{ item }">
                     {{ item.birthDate | formatDate("MM/DD/yyyy") }}
                 </template>
+                <template v-slot:item.classifyNote="{ item }">
+                    <span v-if="item.classifyNote">
+                        <v-chip v-for="key in item.classifyNote.split(', ')"
+                                :key="`${item.id}-${key}`"
+                                :color="key === 'family support' ? 'green' : 'red'"
+                                class="text-capitalize"
+                                label
+                                outlined>
+                            {{ key }}
+                        </v-chip>
+                    </span>
+                </template>
             </v-data-table>
         </v-card>
 
@@ -68,6 +80,8 @@
 <script>
 import * as PatientApiService from '../services/PatientApiService.js'
 import AddEditPatient from '@/pages/patient/components/AddEditPatient.vue';
+import axios from 'axios';
+import {get, put} from '../services/StorageService.js'
 
 export default {
     name: "PatientTable",
@@ -80,14 +94,15 @@ export default {
         headers: [
             {text: 'Name', value: 'name', width: '200px'},
             {text: 'Gender', value: 'gender'},
-            {text: 'Street Address', value: 'streetAddress'},
-            {text: 'City', value: 'city'},
-            {text: 'State', value: 'state'},
-            {text: 'Postal Code', value: 'postalCode'},
+            {text: 'Social Determinants', value: 'classifyNote'},
             {text: 'DoB', value: 'birthDate'}
         ],
         patientList: [],
-        totalPatientCount: null
+        totalPatientCount: null,
+        classifyNote: {
+            loading: false,
+            value: ''
+        }
     }),
     computed: {
         computedPatients() {
@@ -111,8 +126,44 @@ export default {
             this.loading = false;
             this.totalPatientCount = totalPatientCount;
             this.patientList = patients;
+            this.getClassifiedNote();
+        },
+        async getClassifiedNote() {
+            const mappedPatient = this.patientList.filter(pat => !!pat.detailNote).map(patient => ({
+                'patient_id': patient.id,
+                'text': patient.detailNote || ''
+            })).filter(patient => {
+                const cachedValue = get(patient['patient_id']);
+                return !(cachedValue && cachedValue.classifyNote);
+            });
+            if (mappedPatient.length > 0) {
+                const data = await axios.post('http://127.0.0.1:8000/classify/', {
+                    patients: mappedPatient
+                });
+                data.data.data.forEach(val => {
+                    put(val['patient_id'], {
+                        ...get(val['patient_id']),
+                        ...{
+                            classifyNote: val.score
+                        }
+                    })
+                })
+            }
+            this.patientList = this.patientList.map(patient => {
+                const value = get(patient.id);
+                if (value && value.classifyNote) {
+                    const commaSeperatedValue = [];
+                    Object.keys(value.classifyNote).forEach(key => {
+                        const threshold = key === 'family support' ? 30 : 70;
+                        if (parseInt(value.classifyNote[key] * 100, 10) > threshold) {
+                            commaSeperatedValue.push(key);
+                        }
+                    })
+                    patient.classifyNote = commaSeperatedValue.join(", ")
+                }
+                return patient;
+            })
         }
-
     },
     async beforeMount() {
         this.loadPatients();

@@ -16,23 +16,38 @@
         <v-main>
             <div id="nav">
                 <router-link :to="{name: 'PatientTable'}">Patient</router-link>
-<!--                |-->
-<!--                <router-link :to="{name: 'Iris'}">Iris Example</router-link>-->
-<!--                |-->
-<!--                <router-link :to="{name: 'Summary'}">Summary Example</router-link>-->
+                <!--                |-->
+                <!--                <router-link :to="{name: 'Iris'}">Iris Example</router-link>-->
+                <!--                |-->
+                <!--                <router-link :to="{name: 'Summary'}">Summary Example</router-link>-->
+                | <a @click="cleanCache">Clean</a>
             </div>
             <router-view/>
         </v-main>
     </v-app>
 </template>
 
+<script>
+export default {
+    methods: {
+        cleanCache() {
+            Object.keys(localStorage).forEach(key => {
+                if (key.startsWith('NLP::')) {
+                    localStorage.removeItem(key);
+                }
+            })
+        }
+    }
+}
+</script>
+
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+    color: #2c3e50;
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-align: center;
 }
 
 #nav {
