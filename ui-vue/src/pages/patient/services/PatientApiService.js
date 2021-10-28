@@ -34,22 +34,26 @@ function mapPatients(entry) {
     const documentRef = entry.filter(en => en.search.mode === "include").map(e => e.resource);
     return entry.filter(en => en.search.mode === "match")
         .map(e => e.resource)
-        .map(patient => ({
-            id: patient.id,
-            streetAddress: formatStreetAddress(patient),
-            city: formatCity(patient),
-            state: formatState(patient),
-            postalCode: formatPostalCode(patient),
-            name: formatName(patient),
-            gender: patient.gender,
-            birthDate: patient.birthDate,
-            detailNote: getDetailNote(documentRef, patient.id)
-        }));
+        .map(patient => {
+            const detailNote = getDetailNote(documentRef, patient.id)
+            return {
+                id: patient.id,
+                streetAddress: formatStreetAddress(patient),
+                city: formatCity(patient),
+                state: formatState(patient),
+                postalCode: formatPostalCode(patient),
+                name: formatName(patient),
+                gender: patient.gender,
+                birthDate: patient.birthDate,
+                detailNote: detailNote.detailNote,
+                detailNoteId: detailNote.detailNoteId
+            };
+        });
 }
 
 function getDetailNote(detailNoteList, patientId) {
     let note = find(detailNoteList, (note) => note.subject.reference === `Patient/${patientId}`);
-    return note ? note.description : '';
+    return note ? {detailNote: note.description, detailNoteId: note.id} : '';
 }
 
 function formatStreetAddress(patient) {

@@ -6,6 +6,14 @@
                 <v-divider></v-divider>
             </v-col>
         </v-row>
+        <v-row>
+            <v-col class="d-flex justify-end" cols="12">
+                <v-btn color="green" dark @click="showAddDialog = true">
+                    <v-icon>mdi-plus</v-icon>&nbsp;Add Patient
+                </v-btn>
+            </v-col>
+        </v-row>
+        <div class="ma-5"></div>
         <v-card>
             <v-card-title>
                 <v-switch v-model="displayPatientWithNotes" inset label="Patient With Notes Only"></v-switch>
@@ -48,18 +56,27 @@
                 </template>
             </v-data-table>
         </v-card>
+
+        <!-- -->
+        <add-edit-patient v-if="showAddDialog" :show-dialog="showAddDialog"
+                          @close="showAddDialog = false"
+                          @save="showAddDialog = false"/>
+
     </v-container>
 </template>
 
 <script>
 import * as PatientApiService from '../services/PatientApiService.js'
+import AddEditPatient from '@/pages/patient/components/AddEditPatient.vue';
 
 export default {
     name: "PatientTable",
+    components: {AddEditPatient},
     data: () => ({
         loading: false,
         search: '',
-        displayPatientWithNotes: false,
+        displayPatientWithNotes: true,
+        showAddDialog: false,
         headers: [
             {text: 'Name', value: 'name', width: '200px'},
             {text: 'Gender', value: 'gender'},
