@@ -60,7 +60,7 @@
         <!-- -->
         <add-edit-patient v-if="showAddDialog" :show-dialog="showAddDialog"
                           @close="showAddDialog = false"
-                          @save="showAddDialog = false"/>
+                          @save="onSavePatient()"/>
 
     </v-container>
 </template>
@@ -98,17 +98,24 @@ export default {
         }
     },
     methods: {
+        onSavePatient() {
+            this.showAddDialog = false;
+            this.loadPatients();
+        },
         handleRowClick(patient) {
             this.$router.push({name: 'PatientDetail', params: {id: patient.id}})
+        },
+        async loadPatients() {
+            this.loading = true;
+            const [patients, totalPatientCount] = await PatientApiService.findAll();
+            this.loading = false;
+            this.totalPatientCount = totalPatientCount;
+            this.patientList = patients;
         }
 
     },
     async beforeMount() {
-        this.loading = true;
-        const [patients, totalPatientCount] = await PatientApiService.findAll();
-        this.loading = false;
-        this.totalPatientCount = totalPatientCount;
-        this.patientList = patients;
+        this.loadPatients();
     }
 }
 </script>
