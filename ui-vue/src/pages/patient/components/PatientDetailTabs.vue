@@ -3,17 +3,17 @@
         <v-tab>
             <v-icon left>mdi-form-select</v-icon>
             Summary
-            &nbsp;&nbsp;<v-progress-circular v-if="summarizedNote.loading" :size="30" :width="5" color="primary" indeterminate></v-progress-circular>
+            &nbsp;&nbsp;<v-progress-circular v-if="summarizedNote.loading" :size="30" :width="5" color="purple" indeterminate></v-progress-circular>
         </v-tab>
         <v-tab>
             <v-icon left>mdi-marker</v-icon>
             Highlight
-            &nbsp;&nbsp;<v-progress-circular v-if="highlightedNote.loading" :size="30" :width="5" color="primary" indeterminate></v-progress-circular>
+            &nbsp;&nbsp;<v-progress-circular v-if="highlightedNote.loading" :size="30" :width="5" color="purple" indeterminate></v-progress-circular>
         </v-tab>
         <v-tab>
             <v-icon left>mdi-arrange-bring-forward</v-icon>
             Classification
-            &nbsp;&nbsp;<v-progress-circular v-if="classifyNote.loading" :size="30" :width="5" color="primary" indeterminate></v-progress-circular>
+            &nbsp;&nbsp;<v-progress-circular v-if="classifyNote.loading" :size="30" :width="5" color="purple" indeterminate></v-progress-circular>
         </v-tab>
         <v-tab-item>
             <patient-notes :detail-note="patient.detailNote" :loading="summarizedNote.loading" :summarized-note="summarizedNote.value"/>
@@ -22,7 +22,7 @@
             <patient-note-highlighted :highlighted-note="highlightedNote.value" :loading="highlightedNote.loading"/>
         </v-tab-item>
         <v-tab-item>
-            <patient-classification :classify-note="classifyNote"/>
+            <patient-classification :classify-note="classifyNote" :detail-note="patient.detailNote"/>
         </v-tab-item>
     </v-tabs>
 </template>

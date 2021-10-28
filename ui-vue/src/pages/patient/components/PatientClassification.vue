@@ -6,6 +6,19 @@
                 <h4 class="mt-5">Evaluating note.. Please Wait.</h4>
             </div>
             <div v-else>
+                <v-row>
+                    <v-expansion-panels focusable>
+                        <v-expansion-panel>
+                            <v-expansion-panel-header>
+                                Detail Note
+                            </v-expansion-panel-header>
+                            <v-expansion-panel-content>
+                                <p class="user-note"> {{ detailNote }} </p>
+                            </v-expansion-panel-content>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-row>
+                <div class="mb-5"></div>
                 <v-row class="d-flex flex-column">
                     <div v-for="(value, key) in classifyNote.value" :key="key" class="pill-wrapper">
                         <v-col>
@@ -36,7 +49,8 @@ import {getColor} from '@/pages/patient/services/ColorService.js';
 export default {
     name: "PatientClassification",
     props: {
-        classifyNote: {type: Object, required: true}
+        classifyNote: {type: Object, required: true},
+        detailNote: {type: String, required: true}
     },
     methods: {
         getColor,
@@ -54,5 +68,9 @@ export default {
 .pill-wrapper {
     font-weight: 500;
     text-transform: capitalize;
+}
+
+.user-note {
+    text-align: start;
 }
 </style>
