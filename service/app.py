@@ -27,8 +27,7 @@ app = Flask(__name__)
 CORS(app)
 Markdown(app)
 app.secret_key = secret
-classifier = pipeline('zero-shot-classification',
-                      model='facebook/bart-large-mnli')
+classifier = pipeline('zero-shot-classification', model='facebook/bart-large-mnli', multi_class=True)
 
 
 @app.route('/classify/',methods=['POST'])
@@ -39,7 +38,7 @@ def classify():
     patients = data['patients']
 
 
-    parameters = ["drug abuse","family support", "smoke", "alcohol"]
+    parameters = ["drug abuse","family support", "smoke", "alcohol","abusive"]
 
     results = []
 
