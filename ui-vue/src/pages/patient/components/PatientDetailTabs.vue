@@ -11,7 +11,7 @@
             &nbsp;&nbsp;<v-progress-circular v-if="highlightedNote.loading" :size="30" :width="5" color="primary" indeterminate></v-progress-circular>
         </v-tab>
         <v-tab>
-            <v-icon left>mdi-marker</v-icon>
+            <v-icon left>mdi-arrange-bring-forward</v-icon>
             Classification
             &nbsp;&nbsp;<v-progress-circular v-if="classifyNote.loading" :size="30" :width="5" color="primary" indeterminate></v-progress-circular>
         </v-tab>
