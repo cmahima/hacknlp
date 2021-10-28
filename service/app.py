@@ -133,7 +133,11 @@ def summarize():
 
     #print("- NON_REL: " + get_summary(sentence_scores, reduction_rate))
     #print("- REL: " + get_summary(sentence_scores_rel, reduction_rate))
-    return jsonify({'result': get_summary(sentence_scores, reduction_rate)})
+    summary = get_summary(sentence_scores, reduction_rate)
+    if summary == '':
+        summary = "Note very small for summary"
+
+    return jsonify({'result': summary})
 
 
 @app.route('/ner/', methods=['POST'])
