@@ -16,10 +16,10 @@
         <v-main>
             <div id="nav">
                 <router-link :to="{name: 'PatientTable'}">Patient</router-link>
-                |
-                <router-link :to="{name: 'Iris'}">Iris Example</router-link>
-                |
-                <router-link :to="{name: 'Summary'}">Summary Example</router-link>
+<!--                |-->
+<!--                <router-link :to="{name: 'Iris'}">Iris Example</router-link>-->
+<!--                |-->
+<!--                <router-link :to="{name: 'Summary'}">Summary Example</router-link>-->
             </div>
             <router-view/>
         </v-main>
