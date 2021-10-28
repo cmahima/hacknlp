@@ -81,12 +81,12 @@ def summarize():
                     word_frequencies[word.text] += 1
 
     max_frequency = max(word_frequencies.values())
-    print(max_frequency)
+    #print(max_frequency)
 
     for word in word_frequencies.keys():
         word_frequencies[word] = word_frequencies[word] / max_frequency
 
-    print(word_frequencies)
+    #print(word_frequencies)
 
     sentence_tokens = [sent for sent in document.sents]
 
@@ -119,9 +119,13 @@ def summarize():
         summary = ' '.join(final_summary)
         return summary
 
-    print("- NON_REL: " + get_summary(sentence_scores, reduction_rate))
-    print("- REL: " + get_summary(sentence_scores_rel, reduction_rate))
-    return jsonify({'result': get_summary(sentence_scores, reduction_rate)})
+    #print("- NON_REL: " + get_summary(sentence_scores, reduction_rate))
+    #print("- REL: " + get_summary(sentence_scores_rel, reduction_rate))
+    summary = get_summary(sentence_scores, reduction_rate)
+    if summary == '':
+        summary = "Note very small for summary"
+
+    return jsonify({'result': summary})
 
 
 @app.route('/ner/', methods=['POST'])
