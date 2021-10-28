@@ -11,6 +11,15 @@
                                                  indeterminate></v-progress-circular>
             </v-tab>
             <v-tab>
+                <v-icon left>mdi-form-select</v-icon>
+                Summary (Open AI)
+                &nbsp;&nbsp;<v-progress-circular v-if="summarizedNote.loading"
+                                                 :size="30"
+                                                 :width="5"
+                                                 color="purple"
+                                                 indeterminate></v-progress-circular>
+            </v-tab>
+            <v-tab>
                 <v-icon left>mdi-marker</v-icon>
                 Highlight
                 &nbsp;&nbsp;<v-progress-circular v-if="highlightedNote.loading"
@@ -26,6 +35,11 @@
             </v-tab>
             <v-tab-item>
                 <patient-notes :detail-note="patient.detailNote" :loading="summarizedNote.loading" :summarized-note="summarizedNote.value"/>
+            </v-tab-item>
+            <v-tab-item>
+                <patient-notes :detail-note="patient.detailNote"
+                               :loading="summarizedNoteOpenAi.loading"
+                               :summarized-note="summarizedNoteOpenAi.value"/>
             </v-tab-item>
             <v-tab-item>
                 <patient-note-highlighted :highlighted-note="highlightedNote.value" :loading="highlightedNote.loading"/>
@@ -59,6 +73,12 @@ export default {
             this.getSummarizeNote();
         }
 
+        if (savedData && savedData.summarizedNoteOpenAi) {
+            this.summarizedNoteOpenAi.value = savedData.summarizedNoteOpenAi
+        } else {
+            this.getSummarizeNoteOpenAi();
+        }
+
         if (savedData && savedData.highlightedNote) {
             this.highlightedNote.value = savedData.highlightedNote
         } else {
@@ -77,6 +97,10 @@ export default {
         red: 90,
         green: 100,
         summarizedNote: {
+            loading: false,
+            value: ''
+        },
+        summarizedNoteOpenAi: {
             loading: false,
             value: ''
         },
@@ -99,6 +123,18 @@ export default {
                 ...get(this.patient.id),
                 ...{
                     summarizedNote: this.summarizedNote.value
+                }
+            })
+        },
+        async getSummarizeNoteOpenAi() {
+            this.summarizedNoteOpenAi.loading = true;
+            const data = await axios.post('http://127.0.0.1:8000/summarize_openai/', {text: this.patient.detailNote})
+            this.summarizedNoteOpenAi.loading = false;
+            this.summarizedNoteOpenAi.value = data.data.result;
+            put(this.patient.id, {
+                ...get(this.patient.id),
+                ...{
+                    summarizedNoteOpenAi: this.summarizedNoteOpenAi.value
                 }
             })
         },
