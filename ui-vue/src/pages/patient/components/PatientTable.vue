@@ -195,7 +195,7 @@ export default {
                     const commaSeperatedValue = [];
                     const classifyNoteArr = [];
                     Object.keys(value.classifyNote).forEach(key => {
-                        const threshold = key === 'family support' ? 30 : 70;
+                        const threshold =  59;
                         if (parseInt(value.classifyNote[key] * 100, 10) > threshold) {
                             commaSeperatedValue.push(key);
                             classifyNoteArr.push(key)
