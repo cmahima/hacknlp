@@ -32,12 +32,12 @@ const mockPatient1 = {
     streetAddress: undefined
 }
 const mockPatient2 = {
-    birthDate: "1972-05-07",
+    birthDate: "1988-05-07",
     city: undefined,
     detailNote: "A 51-year-old is a nonsmoker and doesn’t drink, She is accompanied here with daughter who brought her over here. They were visiting the patient when this episode occurred. She was documented by previous LH and FSH levels to be in menopause within the last year. She is concerned about breaking her hip as she gets older and is seeking advice on osteoporosis prevention. The patient was actively tox screen positive for benzodiazepines, cocaine, and marijuana. The patient had an inpatient stay in 2008 at ABC Lodge for drug abuse treatment.",
     detailNoteId: "21607",
     gender: "male",
-    id: "1972N05L07P",
+    id: "1988N05L07P",
     name: "Hobbs, Luke",
     postalCode: undefined,
     state: undefined,
