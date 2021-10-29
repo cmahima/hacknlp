@@ -82,6 +82,9 @@ function formatPostalCode(patient) {
 
 function formatName(item) {
     let name = '';
+    if (!item.name) {
+        return name;
+    }
     if (!item.name && !item.name.length > 0) {
         return name;
     }
