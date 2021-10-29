@@ -105,6 +105,7 @@ import * as PatientApiService from '../services/PatientApiService.js'
 import AddEditPatient from '@/pages/patient/components/AddEditPatient.vue';
 import axios from 'axios';
 import {get, put} from '../services/StorageService.js'
+import {getMockPatients} from '@/pages/patient/constants/PatientMocks.js';
 
 export default {
     name: "PatientTable",
@@ -160,10 +161,11 @@ export default {
         },
         async loadPatients() {
             this.loading = true;
-            const [patients, totalPatientCount] = await PatientApiService.findAll();
+            const [patients, totalPatientCount] = await PatientApiService.findAll().finally(() => this.loading = false);
             this.loading = false;
             this.totalPatientCount = totalPatientCount;
-            this.patientList = patients;
+
+            this.patientList = [...getMockPatients(), ...patients];
             this.getClassifiedNote();
         },
         async getClassifiedNote() {

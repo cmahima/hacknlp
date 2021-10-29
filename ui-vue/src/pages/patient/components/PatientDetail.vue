@@ -45,6 +45,7 @@ import * as PatientApiService from '../services/PatientApiService.js'
 import PatientDetailTabs from '@/pages/patient/components/PatientDetailTabs.vue';
 import axios from 'axios';
 import {BASE_DOCUMENT_URL_FHIR, BASE_PATIENTS_URL_FHIR} from '@/pages/patient/constants/PatientConstants.js';
+import {getMockPatientById, isMockPatient} from '@/pages/patient/constants/PatientMocks.js';
 
 export default {
     name: "PatientDetail",
@@ -69,7 +70,12 @@ export default {
         }
     },
     async beforeMount() {
-        this.patient = await PatientApiService.findById(this.id)
+        if (isMockPatient(this.id)) {
+            this.patient = getMockPatientById(this.id);
+        } else {
+            this.patient = await PatientApiService.findById(this.id)
+
+        }
     }
 }
 
