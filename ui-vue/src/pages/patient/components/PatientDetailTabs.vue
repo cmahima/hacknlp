@@ -10,15 +10,7 @@
                                                  color="purple"
                                                  indeterminate></v-progress-circular>
             </v-tab>
-            <v-tab>
-                <v-icon left>mdi-form-select</v-icon>
-                Summary (Open AI)
-                &nbsp;&nbsp;<v-progress-circular v-if="summarizedNote.loading"
-                                                 :size="30"
-                                                 :width="5"
-                                                 color="purple"
-                                                 indeterminate></v-progress-circular>
-            </v-tab>
+
             <v-tab>
                 <v-icon left>mdi-marker</v-icon>
                 Highlight
@@ -36,11 +28,7 @@
             <v-tab-item>
                 <patient-notes :detail-note="patient.detailNote" :loading="summarizedNote.loading" :summarized-note="summarizedNote.value"/>
             </v-tab-item>
-            <v-tab-item>
-                <patient-notes :detail-note="patient.detailNote"
-                               :loading="summarizedNoteOpenAi.loading"
-                               :summarized-note="summarizedNoteOpenAi.value"/>
-            </v-tab-item>
+
             <v-tab-item>
                 <patient-note-highlighted :highlighted-note="highlightedNote.value" :loading="highlightedNote.loading"/>
             </v-tab-item>
@@ -73,12 +61,6 @@ export default {
             this.getSummarizeNote();
         }
 
-        if (savedData && savedData.summarizedNoteOpenAi) {
-            this.summarizedNoteOpenAi.value = savedData.summarizedNoteOpenAi
-        } else {
-            this.getSummarizeNoteOpenAi();
-        }
-
         if (savedData && savedData.highlightedNote) {
             this.highlightedNote.value = savedData.highlightedNote
         } else {
@@ -97,10 +79,6 @@ export default {
         red: 90,
         green: 100,
         summarizedNote: {
-            loading: false,
-            value: ''
-        },
-        summarizedNoteOpenAi: {
             loading: false,
             value: ''
         },
